@@ -1,7 +1,5 @@
 package com.gromyk.projectinfo.data.dtos;
 
-import com.gromyk.projectinfo.data.entities.Sex;
-
 import java.time.LocalDate;
 
 public abstract class UserAbstract {
@@ -10,7 +8,6 @@ public abstract class UserAbstract {
     protected String name;
     protected String email;
     protected LocalDate birthday;
-    protected Sex sex;
 
     public Long getId() {
         return id;
@@ -44,11 +41,4 @@ public abstract class UserAbstract {
         this.birthday = birthday;
     }
 
-    public Sex getSex() {
-        return sex;
-    }
-
-    public void setSex(Sex sex) {
-        this.sex = sex;
-    }
 }

@@ -1,33 +1,32 @@
 package com.gromyk.projectinfo.data.entities;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Table(name = "todos")
 @Entity
-@Table(name = "surveys")
-public class Survey {
+public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    private String name;
-
+    private String title;
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
     @Column(name = "createdAt", columnDefinition = "TIMESTAMP")
+    @CreationTimestamp
     private LocalDateTime createdAt;
-    @OneToMany(mappedBy = "rootSurvey")
-    private List<Question> questions;
+    private String text;
 
-    public Survey() {
+    public Todo() {
     }
 
-    public Survey(String name, User owner, LocalDateTime createdAt) {
-        this.name = name;
+    public Todo(String title, User owner, String text) {
+        this.title = title;
         this.owner = owner;
-        this.createdAt = createdAt;
+        this.text = text;
     }
 
     public Long getId() {
@@ -36,6 +35,14 @@ public class Survey {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public User getOwner() {
@@ -54,19 +61,11 @@ public class Survey {
         this.createdAt = createdAt;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public String getText() {
+        return text;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
     }
 }

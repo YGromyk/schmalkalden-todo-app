@@ -15,7 +15,6 @@ class Navigation extends React.Component {
     };
   }
 
-
   componentDidMount() {
     const user = authService.getCurrentUser();
     if (user) {
@@ -40,34 +39,38 @@ class Navigation extends React.Component {
   render() {
     const { currentUser } = this.state;
     return (
-      <Navbar bg="light" expand="lg">
-        <Container>
+      <Navbar bg="primary" variant="dark">
+        <Container fluid>
           <Navbar.Brand as={Link} to="/">
             Todo App
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="ml-auto">
-              {currentUser ? (
-                <Nav>
-                  <Nav.Link as={Link} to="/profile">
-                    {currentUser.username}
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/profile" onClick={this.logOut}>
-                    LogOut
-                  </Nav.Link>
-                </Nav>
-              ) : (
-                <Nav>
-                  <Nav.Link as={Link} to="/login">
-                    Login
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/register">
-                    Sign Up
-                  </Nav.Link>
-                  </Nav>
-              )}
-            </Nav>
+          <Navbar.Collapse
+            id="responsive-navbar-nav"
+            className="me-auto mb-2 mb-lg-0"
+          >
+            {currentUser ? (
+              <Nav>
+                <Nav.Link as={Link} to="/todos">
+                  Todos
+                </Nav.Link>
+                <Nav.Link as={Link} to="/profile">
+                  {currentUser.username}
+                </Nav.Link>
+                <Nav.Link as={Link} to="/profile" onClick={this.logOut}>
+                  LogOut
+                </Nav.Link>
+              </Nav>
+            ) : (
+              <Nav>
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
+                <Nav.Link as={Link} to="/register">
+                  Sign Up
+                </Nav.Link>
+              </Nav>
+            )}
           </Navbar.Collapse>
         </Container>
       </Navbar>
