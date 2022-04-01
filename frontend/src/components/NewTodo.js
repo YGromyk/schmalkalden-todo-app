@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Button, FormControl, InputGroup } from "react-bootstrap";
+import { Button, Col, FormControl, InputGroup } from "react-bootstrap";
 import { Modal } from "react-bootstrap";
-import { Container } from "react-bootstrap";
 import todosService from "../services/todos.service";
 
-export default function NewTodo() {
+export default function NewTodo({ onTodoAdded }) {
   const [show, setShow] = useState(false);
 
   const [title, setTitle] = useState("");
@@ -15,15 +14,15 @@ export default function NewTodo() {
   const handleShow = () => setShow(true);
 
   const handleSave = () => {
-    todosService.createTodo(title, text).then((it) => handleClose());
+    todosService.createTodo(title, text)
+      .then((todo) => onTodoAdded(todo))
+      .then((it) => handleClose());
   };
 
-  const saveTodo = () => {};
-
   return (
-    <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch demo modal
+    <Col>
+      <Button variant="primary" className="mt-3" onClick={handleShow}>
+        Create a new todo
       </Button>
 
       <Modal show={show} onHide={handleClose}>
@@ -59,6 +58,6 @@ export default function NewTodo() {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </Col>
   );
 }

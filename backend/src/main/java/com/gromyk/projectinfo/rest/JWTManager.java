@@ -19,7 +19,8 @@ public class JWTManager {
 
     public String generateTokenFromUsername(String username) {
         return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)).signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
@@ -30,6 +31,15 @@ public class JWTManager {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public long getExpirationDateFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(jwtSecret)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("exp", Long.class) * 1000;
     }
 
     public boolean validateJwtToken(String authToken) {

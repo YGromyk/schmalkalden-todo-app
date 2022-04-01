@@ -1,12 +1,13 @@
 package com.gromyk.projectinfo.rest;
 
 import com.gromyk.projectinfo.data.Mapper;
-import com.gromyk.projectinfo.data.dtos.LoginRequest;
-import com.gromyk.projectinfo.data.dtos.UserDto;
-import com.gromyk.projectinfo.data.dtos.UserRegisterDto;
+import com.gromyk.projectinfo.data.dtos.*;
+import com.gromyk.projectinfo.data.entities.RefreshToken;
 import com.gromyk.projectinfo.data.entities.User;
 import com.gromyk.projectinfo.data.repositories.UserRepository;
+import com.gromyk.projectinfo.rest.advice.TokenRefreshException;
 import com.gromyk.projectinfo.rest.jwt.JwtResponse;
+import com.gromyk.projectinfo.rest.jwt.RefreshTokenService;
 import com.gromyk.projectinfo.rest.jwt.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -32,13 +33,16 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JWTManager jwtManager;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
+
 
     @Autowired
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTManager jwtManager, AuthenticationManager authenticationManager) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTManager jwtManager, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtManager = jwtManager;
         this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @RequestMapping(
@@ -60,7 +64,33 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String jwt = jwtManager.generateTokenFromUsername(userDetails.getUsername());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(jwt, "empty for now", userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
+        return ResponseEntity.ok(new JwtResponse(
+                jwt,
+                refreshToken.getToken(),
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                roles,
+                jwtManager.getExpirationDateFromToken(jwt)
+        ));
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtManager.generateTokenFromUsername(user.getEmail());
+                    Long expirationDate = jwtManager.getExpirationDateFromToken(token);
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken, expirationDate));
+                })
+                .orElseThrow(() ->
+                        new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!")
+                );
     }
 }

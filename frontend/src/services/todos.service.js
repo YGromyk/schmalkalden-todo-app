@@ -1,26 +1,34 @@
-import axios from "axios";
-import authHeader from "./auth-header";
+import { axiosApiInstance } from "./auth-header";
 
-const API_URL = "http://localhost:8080/api/todos";
+const API_URL = "/todos";
 
 class TodosService {
   getTodos() {
-    return axios.get(API_URL, { headers: authHeader() });
+    return axiosApiInstance.get(API_URL)
+      .catch((error) => console.log(error));
+    ;
   }
 
   createTodo(title, text) {
-    return axios
+    return axiosApiInstance
       .post(
         API_URL + "/new",
         {
           title: title,
           text: text,
-        },
-        { headers: authHeader() }
+        }
       )
       .then((response) => {
         return response.data;
-      });
+      })
+      .catch((error) => console.log(error.body));
+    ;
+  }
+
+  deleteItem(id) {
+    return axiosApiInstance.delete(`${API_URL}/delete/${id}`)
+      .catch((error) => console.log(error));
+    ;
   }
 }
 

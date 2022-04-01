@@ -3,7 +3,6 @@ import { Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AuthService from "./services/auth.service";
 
 import Login from "./components/login.component";
 import Register from "./components/register.component";
@@ -20,7 +19,7 @@ import TodoScreen from "./components/todoscreen";
 class App extends Component {
   render() {
     return (
-      <Container fluid>
+      <Container fluid style={{ paddingLeft: 0, paddingRight: 0 }}>
         <Navigation />
         <Switch className="mt-3">
           <PrivateRoute exact path={["/", "/home"]} component={Home} />

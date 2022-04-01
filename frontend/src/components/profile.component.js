@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { Button, Card, Container, ListGroup, Row } from "react-bootstrap";
 import { Redirect } from "react-router-dom";
+import authService from "../services/auth.service";
 import AuthService from "../services/auth.service";
 import TodoList from "./TodoList";
 
@@ -21,6 +23,12 @@ export default class Profile extends Component {
     this.setState({ currentUser: currentUser, userReady: true });
   }
 
+logOut() {
+  AuthService.logout();
+  const currentUser = undefined;
+  this.setState({ currentUser: currentUser, userReady: false, redirect: "/login"  });
+}
+  
   render() {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />;
@@ -29,35 +37,20 @@ export default class Profile extends Component {
     const { currentUser } = this.state;
 
     return (
-      <div className="container">
+      <Container fluid>
         {this.state.userReady ? (
-          <div>
-            <header className="jumbotron">
-              <h3>
-                <strong>{currentUser.username}</strong> Profile
-              </h3>
-            </header>
-            <p>
-              <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
-              {currentUser.token.substr(currentUser.token.length - 20)}
-            </p>
-            <p>
-              <strong>Id:</strong> {currentUser.id}
-            </p>
-            <p>
-              <strong>Email:</strong> {currentUser.email}
-            </p>
-            <strong>Authorities:</strong>
-            <ul>
-              {currentUser.roles &&
-                currentUser.roles.map((role, index) => (
-                  <li key={index}>{role}</li>
-                ))}
-            </ul>
-            <TodoList />
-          </div>
-        ) : null}
-      </div>
+          <Card style={{ width: '18rem' }}>
+            <Card.Header>              <strong>{currentUser.username}</strong> Profile
+            </Card.Header>
+            <ListGroup variant="flush">
+              <ListGroup.Item>Id: {currentUser.id}</ListGroup.Item>
+              <ListGroup.Item>Email: {currentUser.email}</ListGroup.Item>
+              <Button variant="primary" onClick={() => this.logOut()}>Log out</Button>
+            </ListGroup>
+          </Card>
+        ) : null
+        }
+      </Container>
     );
   }
 }

@@ -48,8 +48,11 @@ public class TodosController {
     public boolean delete(@PathVariable("id") Long todo) {
         User user = getUser();
         Optional<Todo> todoToDelete = todoRepository.findById(todo);
-        todoToDelete.ifPresent(todoRepository::delete);
-        return true;
+        if (todoToDelete.isPresent()) {
+            todoRepository.delete(todoToDelete.get());
+            return true;
+        }
+        return false;
     }
 
     @GetMapping()

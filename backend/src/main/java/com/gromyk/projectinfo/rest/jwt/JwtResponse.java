@@ -10,14 +10,17 @@ public class JwtResponse {
     private String username;
     private String email;
     private List<String> roles;
+    private long tokenExpirationDate;
 
-    public JwtResponse(String token, String refreshToken, Long id, String username, String email, List<String> roles) {
+
+    public JwtResponse(String token, String refreshToken, Long id, String username, String email, List<String> roles, long tokenExpirationDate) {
         this.token = token;
         this.refreshToken = refreshToken;
         this.id = id;
         this.username = username;
         this.email = email;
         this.roles = roles;
+        this.tokenExpirationDate = tokenExpirationDate;
     }
 
     public String getToken() {
@@ -70,5 +73,13 @@ public class JwtResponse {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public long getTokenExpirationDate() {
+        return tokenExpirationDate;
+    }
+
+    public void setTokenExpirationDate(long tokenExpirationDate) {
+        this.tokenExpirationDate = tokenExpirationDate;
     }
 }

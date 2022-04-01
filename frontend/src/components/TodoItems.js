@@ -1,66 +1,49 @@
 import React, { Component } from "react";
-import { Card, ListGroup } from "react-bootstrap";
-import FlipMove from "react-flip-move";
-import todosService from "../services/todos.service";
+import { Button, Card, Col, Row } from "react-bootstrap";
 
 class TodoItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      items: [],
-    };
     this.createTasks = this.createTasks.bind(this);
+    this.delete = this.delete.bind(this);
   }
-  componentDidMount() {
-    todosService.getTodos().then(
-      response => {
-        this.setState({
-            items: response.data
-        });
-      },
-      error => {
-        this.setState({
-          content:
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString()
-        });
-      }
-    );
-  }
+
   delete(key) {
     this.props.delete(key);
   }
 
   createTasks(item) {
     return (
-      <Card
-        style={{ width: "18rem" }}
-        onClick={() => this.delete(item.key)}
-        key={item.id}
-      >
-        {console.log(item)}
-        <Card.Body>
-          <Card.Title>{item.title}</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">
-            Created: {item.createdAt}
-          </Card.Subtitle>
-          <Card.Text>{item.text}</Card.Text>
-        </Card.Body>
-      </Card>
+      <Col key={item.id}>
+        <Card
+          style={{ width: "18rem" }}
+          key={item.id}
+        >
+          <Card.Body>
+            <Card.Title>{item.title}</Card.Title>
+
+            <Card.Text>{item.text}</Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small className="text-muted">
+              Created: {item.createdAt}
+            </small>
+            <br/>
+            <Button variant="danger" onClick={() => this.delete(item.id)}>Remove</Button>
+          </Card.Footer>
+        </Card>
+      </Col>
     );
   }
 
   render() {
-    var todoEntries = this.state.items;
+    var todoEntries = this.props.todos;
     var listItems = todoEntries.map(this.createTasks);
 
     return (
-      <ul className="theList">
-        <FlipMove duration={250} easing="ease-out">
-          {listItems}
-        </FlipMove>
-      </ul>
+      <Row xs={1} md={2} className="g-4">
+        {listItems}
+      </Row>
     );
   }
 }
