@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = "http://backend2.eu-central-1.elasticbeanstalk.com:8080/api/auth/";
+export const API_URL = process.env.REACT_APP_API_URL;
+
+const AUTH_URL = "/api/auth/";
 
 const axiousInstance = axios.create({
   baseURL: API_URL,
@@ -14,7 +16,7 @@ const axiousInstance = axios.create({
 class AuthService {
   login(email, password) {
     return axiousInstance
-      .post(API_URL + "signin", {
+      .post(AUTH_URL + "signin", {
         email,
         password
       })
@@ -32,7 +34,7 @@ class AuthService {
   }
 
   register(username, email, password) {
-    return axiousInstance.post(API_URL + "signup", {
+    return axiousInstance.post(AUTH_URL + "signup", {
       username,
       email,
       password
@@ -46,7 +48,7 @@ class AuthService {
   refreshToken() {
     var refreshToken = JSON.parse(localStorage.getItem('user')).refreshToken;
     if (refreshToken !== null)
-      return axiousInstance.post(API_URL + "refreshToken", {
+      return axiousInstance.post(AUTH_URL + "refreshToken", {
         refreshToken
       }).then(res => {
         return res.data;

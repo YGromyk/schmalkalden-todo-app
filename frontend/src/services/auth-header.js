@@ -1,4 +1,4 @@
-import authService from "./auth.service";
+import authService, {API_URL} from "./auth.service";
 const axios = require('axios');
 
 export default function authHeader() {
@@ -17,7 +17,7 @@ export default function authHeader() {
 
 
 export const axiosApiInstance = axios.create({
-  baseURL: "http://backend2.eu-central-1.elasticbeanstalk.com:8080/api/"
+  baseURL: API_URL + "/api/"
 });
 
 

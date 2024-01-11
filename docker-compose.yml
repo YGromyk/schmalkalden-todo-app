@@ -7,15 +7,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - APP_API_URL=localhost:8000/
-
+      - APP_API_URL=localhost:8000
   backend:
     container_name: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8000:8080"
+      - "8000:8000"
     depends_on:
       - "todo-db"
     environment:
