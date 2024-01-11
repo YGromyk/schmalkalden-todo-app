@@ -1,14 +1,13 @@
 package com.gromyk.projectinfo.data.repositories;
 
-import com.gromyk.projectinfo.data.entities.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import com.gromyk.projectinfo.data.entities.*;
+import org.springframework.data.jpa.repository.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findById(long id);
+
     @Query(value = "select * from users where email = ?1 limit 1", nativeQuery = true)
     Optional<User> findByEmail(String email);
 

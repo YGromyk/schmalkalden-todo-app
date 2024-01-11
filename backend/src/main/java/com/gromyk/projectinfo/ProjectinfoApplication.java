@@ -13,8 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @SpringBootApplication()
 public class ProjectinfoApplication {
 	public static void main(String[] args) {
-		System.out.println("whatsup");
-		System.out.println(args);
 		SpringApplication.run(ProjectinfoApplication.class, args);
 	}
 }
