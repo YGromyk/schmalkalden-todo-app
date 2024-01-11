@@ -1,10 +1,6 @@
-FROM maven:3.8.6-openjdk-18-slim AS build
-COPY src /home/app/src
-COPY pom.xml /home/app
-RUN mvn -f /home/app/pom.xml clean install
-RUN mvn -f /home/app/pom.xml spring-boot:run
-
-#FROM openjdk:20
-#COPY --from=build /home/app/target/*.jar /usr/local/lib/my-app.jar
-#EXPOSE 8080
-#ENTRYPOINT ["java","-jar","/usr/local/lib/my-app.jar"]
+FROM openjdk:17
+ARG backend
+EXPOSE 8080
+WORKDIR /backend
+COPY /build/libs/*.jar /backend/app.jar
+CMD [ "java", "-jar", "/backend/app.jar" ]
