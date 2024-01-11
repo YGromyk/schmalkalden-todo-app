@@ -4,4 +4,5 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 .gradle
+gradlew
 /gradle
